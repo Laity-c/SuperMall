@@ -9,7 +9,8 @@
       <detail-swiper :topImages="topImages" />
       <detail-base-info :Goods="Goods" />
       <detail-shop-info :shop="shop" />
-      <detail-goods-info :detailInfo="detailInfo" @imageLoad="imageLoad" />
+      <!-- <detail-goods-info :detailInfo="detailInfo" @imageLoad="imageLoad" /> -->
+      <detail-goods-info :detailInfo="detailInfo" />
       <detail-param-info :paramInfo="paramInfo" ref="param" />
       <detail-comment-info :commentInfo="commentInfo" ref="comment" />
       <detail-goods :goods="recommend" ref="goods" />
@@ -64,7 +65,7 @@ export default {
       commentInfo: {},
       recommend: [],
       themeTopYs: [], //保存要跳转到的y值
-      getThemTopY: null,
+      // getThemTopY: null,
       crurrIndex: 0,
     };
   },
@@ -99,44 +100,47 @@ export default {
         this.recommend = res.data.list;
         // console.log(this.recommend);
       });
-
-      this.getThemTopY = debounce(() => {
-        this.themeTopYs = [];
-        this.themeTopYs.push(0);
-        // this.$refs.param.$el.offsetTop &&
-        this.themeTopYs.push(this.$refs.param.$el.offsetTop - 50);
-        // this.$refs.comment.$el.offsetTop &&
-        this.themeTopYs.push(this.$refs.comment.$el.offsetTop - 40);
-        // this.$refs.goods.$el.offsetTop &&
-        this.themeTopYs.push(this.$refs.goods.$el.offsetTop - 40);
-        //第二种方法 添加一个无穷大值
-        this.themeTopYs.push(Number.MAX_VALUE);
-        // console.log(this.themeTopYs);
-      }, 500);
     });
+  },
+  updated() {
+    // 获取需要的四个offsetTop
+    this.getThemTopY();
   },
   methods: {
     ...mapActions(["addCarte"]),
+    getThemTopY() {
+      // debounce(() => {
+      this.themeTopYs = [];
+      this.themeTopYs.push(0);
+      this.themeTopYs.push(this.$refs.param.$el.offsetTop);
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+      this.themeTopYs.push(this.$refs.goods.$el.offsetTop);
+      //第二种方法 添加一个无穷大值
+      this.themeTopYs.push(Number.MAX_VALUE);
+      // }, 500);
+    },
     titleClick(index) {
       // 点击导航回到相应的位置
       this.$refs.Scroll.scrollTo(0, -this.themeTopYs[index]);
       this.$refs.detailNav.currentIndex = index;
       // console.log(index);
-      console.log(this.$refs.detailNav.currentIndex);
+      // console.log(this.$refs.detailNav.currentIndex);
     },
-    imageLoad() {
-      // 图片全部加载完成后在获取模块的offsetTop值
-      this.getThemTopY();
-      // console.log(this.$refs.param.$el.offsetTop);
-    },
+
+    //imageLoad() {
+    // 图片全部加载完成后在获取模块的offsetTop值
+    // console.log(this.$refs.param.$el.offsetTop);
+    //},
     contentScroll(position) {
       //判断返回顶部是否显示和隐藏
       this.saveY = -position.y > 1000;
 
       //1.获取y值 因为获取到的是负值，我们需要用其转换主正值
-      const positionY = -position.y;
-
-      //2.positionY和主题里面的值进行对比
+      // const positionY = -position.y;
+      this.listenScrollTheme(-position.y);
+    },
+    listenScrollTheme(position) {
+      // 2.positionY和主题里面的值进行对比
       for (const key in this.themeTopYs) {
         //for in 里面的k为字符串，不是数字，所以不能用于运算。所以我们需要把字符串转换为数字
         let i = parseInt(key);
@@ -152,13 +156,12 @@ export default {
         // 我们使用这种比较简单的方法 来进行比较
         if (
           this.crurrIndex !== i &&
-          positionY > this.themeTopYs[i] &&
-          positionY <= this.themeTopYs[i + 1]
+          position > this.themeTopYs[i] &&
+          position <= this.themeTopYs[i + 1]
         ) {
           this.crurrIndex = i; //这个变量主要的作用就是控制我们多少次赋值
-
           this.$refs.detailNav.currentIndex = i;
-          // console.log(i);
+          console.log(i);
           // console.log(this.themeTopYs[i]);
           // console.log(this.themeTopYs[i + 1]);
         }

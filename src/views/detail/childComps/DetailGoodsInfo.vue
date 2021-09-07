@@ -9,12 +9,19 @@
       {{ detailInfo.detailImage[0].key }}
     </div>
     <div class="info-list">
+      <!-- <img
+        v-for="(item, index) in detailInfo.detailImage[0].list"
+        :src="item"
+        alt=""
+        :key="index"
+        @load="imageLoad" 通过在updata中在调用获取各模块offsetTop值也是正确的。并不会引发错误
+        监听图片的方式会引发$el为undefind的错误
+      /> -->
       <img
         v-for="(item, index) in detailInfo.detailImage[0].list"
         :src="item"
         alt=""
         :key="index"
-        @load="imageLoad"
       />
     </div>
   </div>
@@ -31,9 +38,9 @@ export default {
     },
   },
   methods: {
-    imageLoad() {
-      this.$emit("imageLoad");
-    },
+    // imageLoad() {
+    //   this.$emit("imageLoad");
+    // },
   },
 };
 </script>
