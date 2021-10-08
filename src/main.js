@@ -10,6 +10,8 @@ Vue.config.productionTip = false;
 //解决移动端300ms延迟
 FastClick.attach(document.body);
 
+// window.addEventListener("touchmove", fn, { passive: false });
+
 //使用图片懒加载
 Vue.use(VueLazyLoad, {
   //占位图
