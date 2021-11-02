@@ -33,7 +33,8 @@ import DetailBottomBar from "./childComps/DetailBottomBar";
 import DetailGoods from "../../components/content/goods/GoodsList";
 
 import Scroll from "components/common/scroll/Scroll.vue";
-
+import { login } from "network/request";
+import { getShopGoods } from "network/user";
 import { getDetail, Goods, Shop, GoodsParam, getComment } from "network/detail";
 import { debounce } from "common/utils";
 import { backTopMixin } from "common/mixin";
@@ -168,6 +169,46 @@ export default {
       }
     },
     cartClick() {
+      //1.添加保存到数据中的数据
+      // console.log(this.Goods);
+      //获取商品参数
+      let shopid, shoptitle, shopprice, shopdesc, shopimage;
+      //获取用户Id
+      shopimage = this.topImages[0];
+      shoptitle = this.Goods.title;
+      shopdesc = this.Goods.desc;
+      shopprice = this.Goods.realPrice;
+      shopid = this.iid;
+      const { id } = JSON.parse(localStorage.getItem("username"));
+      //获取token数据
+      const token = localStorage.getItem("userToken");
+      // console.log(shopid, shoptitle, shopcount);
+      const values = {
+        id,
+        token,
+        shopid,
+        shoptitle,
+        shopprice,
+        shopimage,
+        shopdesc,
+      };
+      // const product = {};
+      // console.log(values);
+      //保存商品数据至数据库
+      login({
+        url: "/commodity",
+        method: "post",
+        data: values,
+      })
+        .then((res) => {
+          if (res) {
+            console.log(res);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       //1.添加购物车需要展示的数据
       // console.log(this.Goods);
       const product = {};
@@ -176,13 +217,43 @@ export default {
       product.desc = this.Goods.desc;
       product.price = this.Goods.realPrice;
       product.iid = this.iid;
-
       this.addCarte(product).then((res) => {
         Toast.success({
           message: res,
           duration: 1000,
         });
       });
+      //这一段代码是从数据库中获取加入购物车的商品数据，然后在把返回的数据加入到vuex中保存商品数据的地方
+      //通过商品id从数据库中查询到商品，然后在返回相关数据
+      // const product = {};
+      // login({
+      //   url: "commodity/good/" + shopid,
+      //   method: "get",
+      // })
+      //   .then((res) => {
+      //     if (res) {
+      //       // console.log(res);
+      //       const { image, title, desc, price, iid } = res[0];
+      //       console.log(res[0]);
+      //       product.image = image;
+      //       product.title = title;
+      //       product.desc = desc;
+      //       product.price = price;
+      //       product.iid = iid;
+      //       // console.log(image, title, desc, price, iid);
+      //       this.addCarte(product).then((res) => {
+      //         Toast.success({
+      //           message: res,
+      //           duration: 1000,
+      //         });
+      //       });
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+      // console.log(product);
+
       // this.$store.dispatch("addCarte", product).then((res) => {
       //   Toast.success(res);
       // });

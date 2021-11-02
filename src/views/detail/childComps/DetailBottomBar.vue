@@ -22,12 +22,17 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { Toast } from "vant";
+
 export default {
   data() {
     return {
       selectShow: false,
     };
+  },
+  computed: {
+    ...mapGetters(["getcartList"]),
   },
   methods: {
     collectClick() {

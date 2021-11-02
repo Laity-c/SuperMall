@@ -5,3 +5,4 @@ export const ADD_CART = "add_cart";
 export const ADD_CLICK = "add_click";
 export const SUB_CLICK = "sub_click";
 export const ROMM_CLICK = "romm_click";
+export const CLEAR_CLICK = "clear_click";

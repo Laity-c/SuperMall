@@ -10,7 +10,8 @@
       <div class="info-title">{{ product.title }}</div>
       <div class="info-desc">{{ product.desc }}</div>
       <div class="info-bottom">
-        <div class="item-price left">￥{{ product.price }}</div>
+        <!-- <div class="item-price left">￥{{ product.price.toFixed(2) }}</div> -->
+        <div class="item-price left">￥{{ price }}</div>
         <div class="item-count right">
           <button
             class="subtract"
@@ -36,6 +37,8 @@ import checkButon from "components/content/checkbutton/checkButton";
 import { mapActions } from "vuex";
 import { Toast } from "vant";
 
+import { login } from "network/request";
+
 export default {
   data() {
     return {
@@ -57,6 +60,15 @@ export default {
   components: {
     checkButon,
   },
+  computed: {
+    // price() {
+    //   return this.product.price.toFixed(2);
+    // },
+    price() {
+      const price = this.product.price * 1;
+      return price.toFixed(2);
+    },
+  },
   methods: {
     ...mapActions({
       xromm: "romm",
@@ -74,7 +86,24 @@ export default {
     },
 
     rommClick() {
+      // console.log(this.product.iid);
+      // const token = localStorage.getItem("userToken")
+      const { id } = JSON.parse(localStorage.getItem("username"));
+      const value = { id };
       this.xromm(this.itemIndex).then((res) => {
+        login({
+          url: "commodity/romove/" + this.product.iid,
+          method: "post",
+          data: value,
+        })
+          .then((res) => {
+            if (res) {
+              console.log(res);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         Toast.success({
           message: res,
           duration: 1000,

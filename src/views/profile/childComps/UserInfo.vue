@@ -1,7 +1,8 @@
 <template>
   <div class="user-info">
-    <div class="user-img">
-      <slot name="user-icon">
+    <div class="user-img" @click="imgClick">
+      <img v-if="avatarUrl" :src="avatarUrl" alt="" />
+      <slot name="user-icon" v-else>
         <svg
           t="1619340779388"
           class="icon privateImage-svg left"
@@ -22,7 +23,10 @@
     </div>
     <div class="user-login">
       <div class="login">
-        <slot name="login"> <span>登陆</span>/<span>注册</span> </slot>
+        <span v-if="name">{{ name }}</span>
+        <slot name="login" v-else>
+          <span @click="login">登陆</span>/<span @click="register">注册</span>
+        </slot>
       </div>
       <div>
         <svg
@@ -41,11 +45,11 @@
             fill="#ffffff"
           ></path>
         </svg>
-
-        <slot name="phone">暂无绑定手机号码</slot>
+        <span v-if="phone">{{ phone }}</span>
+        <slot name="phone" v-else>暂无绑定手机号码</slot>
       </div>
     </div>
-    <div class="parenthesis">
+    <div class="parenthesis" @click="isShow = !isShow">
       <slot>
         <svg
           t="1619341923729"
@@ -65,11 +69,142 @@
         </svg>
       </slot>
     </div>
+    <transition name="fade">
+      <div v-show="isShow" class="exit" @click="exitClick">退出登陆</div>
+    </transition>
+    <van-popup
+      v-model="show"
+      closeable
+      position="bottom"
+      :style="{ height: '30%' }"
+      class="upload"
+    >
+      <div class="tx">上传头像</div>
+      <!-- <van-form @submit="onSubmit"> -->
+      <!-- <van-field name="uploader" label="头像上传"> -->
+      <!-- <template #input> -->
+      <van-uploader
+        v-model="uploader"
+        multiple
+        :max-count="1"
+        :after-read="PicOnReady"
+      />
+      <!-- </template> -->
+      <!-- </van-field> -->
+      <!-- <div style="margin: 16px">
+          <van-button round block type="info" native-type="submit"
+            >提交</van-button
+          >
+        </div> -->
+      <!-- </van-form> -->
+    </van-popup>
   </div>
 </template>
 
 <script>
-export default {};
+import { login } from "network/request";
+
+import { Notify } from "vant";
+import { mapActions } from "vuex";
+export default {
+  data() {
+    return {
+      name: "",
+      phone: "",
+      isShow: false,
+      show: false,
+      avatarUrl: "",
+      uploader: [],
+    };
+  },
+  created() {
+    const { name, phone, avatar_url, id } = JSON.parse(
+      localStorage.getItem("username")
+    );
+    this.name = name;
+    this.phone = phone;
+    this.avatarUrl = avatar_url;
+    // console.log(this.avatarUrl);
+    if (!this.avatarUrl) {
+      // console.log(11);
+      login({
+        url: `/users/${id}/avatarurl`,
+        method: "get",
+      })
+        .then((res) => {
+          if (res) {
+            console.log(res);
+            this.avatarUrl = res[0].avatar_url;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  },
+  activated() {
+    const { name, phone, avatar_url } = JSON.parse(
+      localStorage.getItem("username")
+    );
+    this.name = name;
+    this.phone = phone;
+    this.avatarUrl = avatar_url;
+    this.isShow = false;
+    console.log(this.name, this.phone);
+  },
+  methods: {
+    ...mapActions(["clear"]),
+    login() {
+      this.$router.push("/longin");
+    },
+    register() {
+      this.$router.push("/register");
+    },
+    exitClick() {
+      localStorage.removeItem("userToken");
+      this.$router.push("/longin");
+      this.clear();
+    },
+    imgClick() {
+      this.show = !this.show;
+    },
+    PicOnReady(file) {
+      // after-read	 文件读取完成后的回调函数
+      var formdata = new FormData();
+      formdata.append("avatar", file.file); //传递的文件数据
+      // console.log(formdata);
+      const token = localStorage.getItem("userToken");
+      login({
+        url: "upload/avatar",
+        method: "post",
+        data: formdata,
+        headers: {
+          "content-type": "multipart/form-data",
+          authorization: token,
+        },
+      }).then((res) => {
+        //如果传入的响应状态码为200，则成功将文件发送给后台
+        if (res) {
+          Notify({ type: "success", message: res });
+          // console.log(res);
+        } else {
+          console.log(res.data.msg); //这块是请求失败后台给返回的相应的数据
+        }
+      });
+    },
+    /* onSubmit(values) {
+      const token = localStorage.getItem("userToken");
+      console.log("submit", values.uploader);
+      const avatar = values.uploader[0];
+      const value = {
+        avatar,
+        token,
+      };
+      // console.log(value);
+      // this.PicOnReady();
+    }, */
+  },
+};
 </script>
 
 <style scoped>
@@ -86,6 +221,11 @@ export default {};
   text-align: center;
   /* background-color: #fff; */
 }
+.user-img img {
+  width: 100%;
+  height: 100%;
+}
+
 .user-login {
   flex: 1;
   position: relative;
@@ -97,6 +237,7 @@ export default {};
 .login {
   margin-bottom: 8px;
 }
+
 .icon-mobile {
   position: absolute;
   left: -9px;
@@ -104,5 +245,41 @@ export default {};
 }
 .parenthesis {
   width: 20px;
+}
+
+.exit {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 45px;
+  width: 100%;
+  height: 50px;
+  color: #fff;
+  background-color: red;
+  text-align: center;
+  line-height: 50px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+.upload {
+  padding-top: 80px;
+  text-align: center;
+}
+
+.upload .tx {
+  position: absolute;
+  left: -20px;
+  top: 20px;
+  /* color: red; */
+  width: 200px;
+  height: 20px;
+  /* background-color: pink; */
+  /* text-align: center; */
 }
 </style>

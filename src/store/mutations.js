@@ -4,6 +4,7 @@ import {
   ADD_CLICK,
   SUB_CLICK,
   ROMM_CLICK,
+  CLEAR_CLICK,
 } from "./mutaions-types";
 export default {
   [ADD_COUNT](state, payload) {
@@ -23,5 +24,8 @@ export default {
   [ROMM_CLICK](state, payload) {
     state.cartList.splice(payload, 1);
     // console.log(payload);
+  },
+  [CLEAR_CLICK](state) {
+    state.cartList = [];
   },
 };

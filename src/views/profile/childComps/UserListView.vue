@@ -4,27 +4,22 @@
       <!-- <div v-for="(item,index) in orderList" :></div> -->
       <div class="list-item">
         <svg
-          t="1619343143947"
-          class="news"
+          t="1635661883091"
+          class="icon"
           viewBox="0 0 1024 1024"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
-          p-id="5130"
+          p-id="2633"
           width="22"
           height="25"
         >
           <path
-            d="M901.89824 125.31712H122.88c-67.75808 0-122.88 55.12192-122.88 122.88v552.97024c0 67.75808 55.12192 122.88 122.88 122.88h779.01824c67.75808 0 122.88-55.12192 122.88-122.88V248.19712c0-67.74784-55.12192-122.88-122.88-122.88z m81.92 675.85024c0 45.16864-36.75136 81.92-81.92 81.92H122.88c-45.16864 0-81.92-36.75136-81.92-81.92V248.19712c0-45.16864 36.75136-81.92 81.92-81.92h779.01824c45.16864 0 81.92 36.75136 81.92 81.92v552.97024z"
+            d="M896 496.896a25.6 25.6 0 0 1 51.2 0V768a179.2 179.2 0 0 1-179.2 179.2H256a179.2 179.2 0 0 1-179.2-179.2V256a179.2 179.2 0 0 1 179.2-179.2h313.1392a25.6 25.6 0 0 1 0 51.2H256a128 128 0 0 0-128 128v512a128 128 0 0 0 128 128h512a128 128 0 0 0 128-128V496.896z m-5.9392-373.5296a25.6 25.6 0 1 1 37.4784 34.8672L547.2 567.0912a25.6 25.6 0 0 1-37.4784-34.8672L890.0608 123.3664z"
+            p-id="2634"
             fill="#bfbfbf"
-            p-id="5131"
-          ></path>
-          <path
-            d="M527.7184 502.43584a21.7088 21.7088 0 0 1-30.65856 0L206.00832 211.39456l-28.95872 28.95872 291.05152 291.05152c12.21632 12.20608 28.25216 18.31936 44.288 18.31936s32.08192-6.11328 44.288-18.31936l291.05152-291.05152-28.95872-28.95872-291.05152 291.04128z"
-            fill="#bfbfbf"
-            p-id="5132"
           ></path>
         </svg>
-        <div class="mynews">我的消息</div>
+        <div class="mynews" @click="ClickAddress">我的收货地址</div>
       </div>
       <div class="list-item">
         <svg
@@ -58,9 +53,9 @@
             p-id="6101"
           ></path>
         </svg>
-        <div class="mynews">积分商城</div>
+        <div class="mynews" @click="IntegralClick">积分商城</div>
       </div>
-      <div class="list-item">
+      <!-- <div class="list-item">
         <svg
           t="1619343909612"
           class="news"
@@ -83,7 +78,7 @@
           ></path>
         </svg>
         <div class="mynews">会员卡</div>
-      </div>
+      </div> -->
     </div>
     <div class="list-item" @click="cartClick">
       <svg
@@ -134,7 +129,7 @@
       </svg>
       <div class="mynews">我的购物车</div>
     </div>
-    <div class="list-item">
+    <div class="list-item" @click="downloadClick">
       <svg
         t="1619344088216"
         class="news"
@@ -156,14 +151,36 @@
       </svg>
       <div class="mynews">下载购物APP</div>
     </div>
+    <van-overlay v-show="show" @click="show = !show">
+      <div class="wrapper">
+        <div class="block">
+          <h2 class="title">扫描二维码跳转至app</h2>
+          <img src="~assets/img/common/app.png" alt="" />
+        </div>
+      </div>
+    </van-overlay>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      show: false,
+    };
+  },
   methods: {
     cartClick() {
       this.$router.push("/cart");
+    },
+    ClickAddress() {
+      this.$router.push("/address");
+    },
+    IntegralClick() {
+      this.$router.push("/integral");
+    },
+    downloadClick() {
+      this.show = true;
     },
   },
 };
@@ -185,5 +202,28 @@ export default {
   width: 83%;
   padding: 10px 4px;
   border-bottom: 1px solid #ccc;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.block {
+  width: 200px;
+  height: 200px;
+  /* background-color: #fff; */
+}
+
+.block .title {
+  white-space: nowrap;
+  color: #fff;
+}
+
+.block img {
+  width: 100%;
+  height: 100%;
 }
 </style>

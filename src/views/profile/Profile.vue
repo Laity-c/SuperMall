@@ -2,7 +2,7 @@
   <div class="profile">
     <!-- 导航栏 -->
     <nav-bar class="profile-nav">
-      <div slot="center">个人页面</div>
+      <div slot="center">个人信息</div>
     </nav-bar>
     <!-- 个人信息 -->
     <user-info></user-info>

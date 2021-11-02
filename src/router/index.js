@@ -6,6 +6,10 @@ const Cart = () => import("../views/cart/Cart");
 const Category = () => import("../views/category/Category");
 const Profile = () => import("../views/profile/Profile");
 const Detail = () => import("../views/detail/Detail");
+const Longin = () => import("../components/content/user/UserLongin");
+const Register = () => import("../components/content/user/UserRegister");
+const Address = () => import("../components/content/user/Address");
+const Integral = () => import("../components/content/user/Integral");
 
 Vue.use(VueRouter);
 
@@ -43,6 +47,22 @@ const routes = [
     path: "/detail/:iid",
     component: Detail,
   },
+  {
+    path: "/longin",
+    component: Longin,
+  },
+  {
+    path: "/register",
+    component: Register,
+  },
+  {
+    path: "/address",
+    component: Address,
+  },
+  {
+    path: "/integral",
+    component: Integral,
+  },
 ];
 
 const router = new VueRouter({
@@ -50,4 +70,13 @@ const router = new VueRouter({
   mode: "history",
 });
 
+//路由守卫
+router.beforeEach((to, from, next) => {
+  const isToken = window.localStorage.getItem("userToken");
+  if (to.path == "/longin" || to.path == "/register") {
+    next();
+  } else {
+    isToken ? next() : next("/longin");
+  }
+});
 export default router;

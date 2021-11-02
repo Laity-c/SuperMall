@@ -5,6 +5,33 @@ import store from "./store";
 import FastClick from "fastclick";
 import VueLazyLoad from "vue-lazyload";
 
+import {
+  Form,
+  Field,
+  Button,
+  RadioGroup,
+  Radio,
+  Overlay,
+  Notify,
+  Popup,
+  Uploader,
+  AddressEdit,
+  Grid,
+  GridItem,
+} from "vant";
+
+Vue.use(Form);
+Vue.use(Field);
+Vue.use(Button);
+Vue.use(RadioGroup);
+Vue.use(Radio);
+Vue.use(Overlay);
+Vue.use(Notify);
+Vue.use(Popup);
+Vue.use(Uploader);
+Vue.use(AddressEdit);
+Vue.use(Grid);
+Vue.use(GridItem);
 Vue.config.productionTip = false;
 
 //解决移动端300ms延迟

@@ -4,6 +4,7 @@ import {
   ADD_CLICK,
   SUB_CLICK,
   ROMM_CLICK,
+  CLEAR_CLICK,
 } from "./mutaions-types";
 export default {
   addCarte(context, payload) {
@@ -38,5 +39,8 @@ export default {
       context.commit(ROMM_CLICK, payload);
       resolve("商品删除成功");
     });
+  },
+  clear(context) {
+    context.commit(CLEAR_CLICK);
   },
 };

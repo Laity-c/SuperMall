@@ -8,6 +8,17 @@
       合计：<span>{{ totalPrice }}</span>
     </div>
     <div class="calculate" @click="calcClick">结算({{ totalLength }})</div>
+    <van-overlay v-show="show" @click="show = !show">
+      <div class="wrapper">
+        <h2 class="title">
+          请在<strong>{{ counter }}</strong
+          >秒内完成支付
+        </h2>
+        <div class="block">
+          <img src="~assets/img/common/支付码.png" alt="" />
+        </div>
+      </div>
+    </van-overlay>
   </div>
 </template>
 
@@ -17,6 +28,12 @@ import { mapGetters } from "vuex";
 import { Toast } from "vant";
 
 export default {
+  data() {
+    return {
+      show: false,
+      counter: 30,
+    };
+  },
   components: {
     checkButon,
   },
@@ -55,7 +72,29 @@ export default {
     },
     calcClick() {
       if (this.getcartList.find((item) => item.checked)) {
-        Toast.success("购买成功");
+        //倒计时
+        let zf = setInterval(() => {
+          this.counter -= 1;
+          if (this.counter == 0) {
+            this.show = false;
+            clearInterval(zf);
+            this.counter = 30;
+            // Toast("支付不成功");
+          } else if (this.show === false) {
+            clearInterval(zf);
+            this.counter = 30;
+          }
+        }, 1000);
+
+        // this.getcartList.find((item) => {
+        //   if (item.checked) {
+        //     console.log(item.iid);
+        //   }
+        //   console.log(item.checked);
+        //   // return item.checked;
+        // });
+        this.show = true;
+        // Toast.success("购买成功");
         // Toast("kkk");
       } else {
         // Toast.success("未选中任何商品");
@@ -102,5 +141,33 @@ export default {
   font-size: 15px;
 
   background: linear-gradient(to right, #fa983a, #e58e26);
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.title {
+  position: absolute;
+  top: 30%;
+  color: #fff;
+}
+
+.title strong {
+  color: red;
+}
+
+.block {
+  width: 200px;
+  height: 200px;
+  /* background-color: #fff; */
+}
+
+.block img {
+  width: 100%;
+  height: 100%;
 }
 </style>

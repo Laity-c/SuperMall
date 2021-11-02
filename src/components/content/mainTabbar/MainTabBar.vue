@@ -35,7 +35,7 @@
           src="~assets/img/tabbar/profile_active.svg"
           alt=""
         />
-        <div slot="item-text">用户</div>
+        <div slot="item-text">我的</div>
       </tab-bar-item>
     </tab-bar>
   </div>
