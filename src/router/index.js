@@ -10,6 +10,7 @@ const Longin = () => import("../components/content/user/UserLongin");
 const Register = () => import("../components/content/user/UserRegister");
 const Address = () => import("../components/content/user/Address");
 const Integral = () => import("../components/content/user/Integral");
+const OrderForm = () => import("../components/content/user/OrderForm");
 
 Vue.use(VueRouter);
 
@@ -62,6 +63,10 @@ const routes = [
   {
     path: "/integral",
     component: Integral,
+  },
+  {
+    path: "/orderform",
+    component: OrderForm,
   },
 ];
 

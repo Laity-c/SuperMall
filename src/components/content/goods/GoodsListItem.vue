@@ -41,6 +41,8 @@ export default {
   width: 48%;
   font-size: 12px;
   padding-bottom: 40px;
+  /* margin: 10px;
+  width: calc(100% / 3 - 20px); */
 }
 .goods-list-item img {
   width: 100%;

@@ -8,7 +8,19 @@
       合计：<span>{{ totalPrice }}</span>
     </div>
     <div class="calculate" @click="calcClick">结算({{ totalLength }})</div>
-    <van-overlay v-show="show" @click="show = !show">
+    <!-- <van-password-input
+      :value="value"
+      info="密码为 6 位数字"
+      :error-info="errorInfo"
+      :focused="showKeyboard"
+      @focus="showKeyboard = true"
+    /> -->
+    <van-number-keyboard
+      v-model="value"
+      :show="showKeyboard"
+      @blur="showKeyboard = false"
+    />
+    <!-- <van-overlay v-show="show" @click="show = !show">
       <div class="wrapper">
         <h2 class="title">
           请在<strong>{{ counter }}</strong
@@ -18,20 +30,25 @@
           <img src="~assets/img/common/支付码.png" alt="" />
         </div>
       </div>
-    </van-overlay>
+    </van-overlay> -->
   </div>
 </template>
 
 <script>
 import checkButon from "components/content/checkbutton/checkButton";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import { Toast } from "vant";
+import { login } from "network/request";
 
 export default {
   data() {
     return {
-      show: false,
+      //这个是上面控制弹出遮罩层的属性
+      // show: false,
       counter: 30,
+      value: "",
+      paymentcode: "",
+      showKeyboard: false,
     };
   },
   components: {
@@ -59,7 +76,25 @@ export default {
       return !this.getcartList.find((item) => !item.checked);
     },
   },
+  watch: {
+    value(value) {
+      console.log(value);
+      if (value.length === 6) {
+        this.paymentcode = value;
+        this.calcClick();
+        console.log(this.paymentcode);
+        this.value = "";
+      }
+    },
+  },
   methods: {
+    ...mapActions(["rommchecked", "clear", "addOrder"]),
+    onInput(value) {
+      Toast(value);
+    },
+    onDelete() {
+      Toast("删除");
+    },
     checkClick() {
       //通过全选按钮是否选中来决定Item是否全选或全不先
       if (this.isSelectAll) {
@@ -72,30 +107,100 @@ export default {
     },
     calcClick() {
       if (this.getcartList.find((item) => item.checked)) {
+        this.showKeyboard = true;
         //倒计时
-        let zf = setInterval(() => {
-          this.counter -= 1;
-          if (this.counter == 0) {
-            this.show = false;
-            clearInterval(zf);
-            this.counter = 30;
-            // Toast("支付不成功");
-          } else if (this.show === false) {
-            clearInterval(zf);
-            this.counter = 30;
-          }
-        }, 1000);
-
-        // this.getcartList.find((item) => {
-        //   if (item.checked) {
-        //     console.log(item.iid);
+        // let zf = setInterval(() => {
+        //   this.counter -= 1;
+        //   if (this.counter == 0) {
+        //     this.show = false;
+        //     clearInterval(zf);
+        //     this.counter = 30;
+        //     // Toast("支付不成功");
+        //   } else if (this.show === false) {
+        //     clearInterval(zf);
+        //     this.counter = 30;
         //   }
-        //   console.log(item.checked);
-        //   // return item.checked;
-        // });
-        this.show = true;
-        // Toast.success("购买成功");
-        // Toast("kkk");
+        // }, 1000);
+        const { paymentcode } = JSON.parse(localStorage.getItem("username"));
+        console.log(paymentcode);
+        if (this.paymentcode === paymentcode) {
+          this.getcartList.forEach((item, index) => {
+            if (item.checked) {
+              //1.把数据保存到下面这些属性中
+              console.log(item);
+              //获取商品参数
+              let shopid, shoptitle, shopprice, shopdesc, shopimage;
+              //获取用户Id
+              shopimage = item.image;
+              shoptitle = item.title;
+              shopdesc = item.desc;
+              shopprice = item.price;
+              shopid = item.iid;
+              const { id } = JSON.parse(localStorage.getItem("username"));
+              // //获取token数据
+              const token = localStorage.getItem("userToken");
+              // // console.log(shopid, shoptitle, shopcount);
+              const values = {
+                id,
+                token,
+                shopid,
+                shoptitle,
+                shopprice,
+                shopimage,
+                shopdesc,
+              };
+
+              const selectAll = this.getcartList.every((value) => {
+                return value.checked;
+              });
+              if (selectAll) {
+                this.clear();
+                console.log(1);
+              } else {
+                if (item.checked) {
+                  this.rommchecked(index);
+                }
+                // console.log(item.checked);
+              }
+
+              console.log(values);
+              const product = {};
+              product.image = shopimage;
+              product.title = shoptitle;
+              product.desc = shopdesc;
+              product.price = shopprice;
+              product.iid = shopid;
+              this.addOrder(product).then((res) => {
+                // 保存商品数据至数据库;
+                console.log(res);
+                login({
+                  url: "/orderform",
+                  method: "post",
+                  data: values,
+                });
+              });
+
+              // 把结算成功的商品从购物车表中移除
+              const value = { id };
+              console.log(shopid, value);
+              login({
+                url: "/commodity/romove/" + shopid,
+                method: "post",
+                data: value,
+              });
+            }
+            // console.log(item.checked);
+            // return item.checked;
+          });
+          // this.show = true;
+          Toast.success("购买成功");
+          // Toast("kkk");
+        } else {
+          console.log(111);
+          if (this.paymentcode) {
+            Toast("支付密码错误");
+          }
+        }
       } else {
         // Toast.success("未选中任何商品");
         Toast("未选中任何商品");
@@ -169,5 +274,12 @@ export default {
 .block img {
   width: 100%;
   height: 100%;
+}
+
+.xsmm {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
 }
 </style>

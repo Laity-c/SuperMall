@@ -10,6 +10,7 @@ Vue.use(Vuex);
 
 const state = {
   cartList: [],
+  orderList: [],
 };
 
 //声明实例

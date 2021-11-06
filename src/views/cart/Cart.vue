@@ -41,8 +41,8 @@ export default {
   activated() {
     if (!this.cartListLength) {
       const { id } = JSON.parse(localStorage.getItem("username"));
-      console.log(id);
-      const product = {};
+      // console.log(id);
+      // const product = {};
       /**
        * 下面测试错误的主要原来不是数据循环问题
        * 主要是因为我们数据库中返回的数据属性名称和调用接口数据中的名称不同

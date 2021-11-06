@@ -18,6 +18,10 @@ import {
   AddressEdit,
   Grid,
   GridItem,
+  Search,
+  Empty,
+  PasswordInput,
+  NumberKeyboard,
 } from "vant";
 
 Vue.use(Form);
@@ -32,6 +36,10 @@ Vue.use(Uploader);
 Vue.use(AddressEdit);
 Vue.use(Grid);
 Vue.use(GridItem);
+Vue.use(Search);
+Vue.use(Empty);
+Vue.use(PasswordInput);
+Vue.use(NumberKeyboard);
 Vue.config.productionTip = false;
 
 //解决移动端300ms延迟

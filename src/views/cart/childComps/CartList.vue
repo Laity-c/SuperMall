@@ -29,17 +29,6 @@ export default {
   },
   activated() {
     this.$refs.scroll.refresh();
-    // const { id } = JSON.parse(localStorage.getItem("username"));
-    // login({
-    //   url: "commodity/goods/" + id,
-    //   method: "get",
-    // }).then((res) => {
-    //   for (const key in res) {
-
-    //     console.log(res[key].id);
-    //   }
-    // });
-    // console.log(this.CartListItem);
   },
 };
 </script>

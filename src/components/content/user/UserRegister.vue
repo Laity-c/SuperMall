@@ -30,6 +30,19 @@
         ]"
       />
       <van-field
+        v-model="paymentcode"
+        type="password"
+        name="paymentcode"
+        label="支付密码"
+        placeholder="请输入密码"
+        :rules="[
+          {
+            validator: asyncValidator4,
+            message: '密码只能为数字，长度为6位',
+          },
+        ]"
+      />
+      <van-field
         v-model="phone"
         name="phone"
         label="手机号"
@@ -64,6 +77,7 @@ export default {
       name: "",
       password: "",
       phone: "",
+      paymentcode: "",
       show: false,
     };
   },
@@ -100,6 +114,16 @@ export default {
               val
             )
           );
+        }, 1000);
+      });
+    },
+    asyncValidator4(val) {
+      return new Promise((resolve) => {
+        // Toast.loading("验证中...");
+
+        setTimeout(() => {
+          Toast.clear();
+          resolve(/^\d{6}$/.test(val));
         }, 1000);
       });
     },

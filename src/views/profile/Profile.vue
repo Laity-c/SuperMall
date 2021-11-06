@@ -6,7 +6,7 @@
     </nav-bar>
     <!-- 个人信息 -->
     <user-info></user-info>
-    <user-wallet></user-wallet>
+    <!-- <user-wallet></user-wallet> -->
     <!-- 工具 -->
     <user-list-view></user-list-view>
   </div>

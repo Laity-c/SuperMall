@@ -95,9 +95,9 @@ export default {
             setTimeout(() => {
               Notify({ type: "success", message: "登陆成功" });
               // Toast.success("登陆成功");
-              const { id, name, phone, token, avatar_url } = res;
+              const { id, name, phone, token, avatar_url, paymentcode } = res;
               window.localStorage.setItem("userToken", token);
-              const user = { id, name, phone, avatar_url };
+              const user = { id, name, phone, avatar_url, paymentcode };
               window.localStorage.setItem("username", JSON.stringify(user));
               this.$router.push("/profile");
 

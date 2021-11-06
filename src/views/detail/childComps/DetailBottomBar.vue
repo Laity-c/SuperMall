@@ -16,7 +16,7 @@
     </div>
     <div class="bar-text">
       <div class="cart" @click="cartClick">加入购物车</div>
-      <div class="buy" @click="buyClick">购买</div>
+      <!-- <div class="buy" @click="buyClick">购买</div> -->
     </div>
   </div>
 </template>
@@ -123,7 +123,7 @@ export default {
   display: flex;
   align-items: center;
 
-  background-color: #ee5a24;
+  /* background-color: #ee5a24; */
   border-radius: 25px;
 }
 
@@ -137,8 +137,9 @@ export default {
   /* width: 50%; */
   background-color: #f79f1f;
   color: #666666;
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
+  border-radius: 25px;
+  /* border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px; */
 }
 
 .bar-text .buy {
