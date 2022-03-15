@@ -37,7 +37,7 @@ export default {
         //   定义自动轮播
         autoplay: {
           delay: 2000, //多少秒轮播
-          stopOnLastSlide: false,
+          // stopOnLastSlide: false, //到最后一张停止轮播
           disableOnInteraction: true,
         },
         pagination: {

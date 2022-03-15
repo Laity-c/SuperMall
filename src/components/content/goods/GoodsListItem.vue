@@ -3,7 +3,7 @@
     <img v-lazy="imgUrl" alt="" />
     <div>
       <p class="title">{{ goodsItem.title }}</p>
-      <span class="price">{{ goodsItem.price }}</span>
+      <span class="price"><span>￥</span>{{ goodsItem.price }}</span>
       <span class="collect">{{ goodsItem.cfav }}</span>
     </div>
   </div>
@@ -40,12 +40,13 @@ export default {
   position: relative;
   width: 48%;
   font-size: 12px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   /* margin: 10px;
   width: calc(100% / 3 - 20px); */
 }
 .goods-list-item img {
   width: 100%;
+  height: 90%;
   border-radius: 2%;
 }
 .title {
@@ -72,15 +73,21 @@ export default {
 }
 
 .price {
-  margin-right: 20px;
-  color: var(--color-navbar);
+  margin-right: 30px;
+  font-size: 16px;
+  color: #fc5531;
+}
+
+.price span {
+  font-size: 12px;
 }
 
 .goods-list-item div {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  text-align: center;
+  bottom: 5px;
+  /* background-color: #000; */
+  /* text-align: center; */
 }
 </style>
