@@ -122,7 +122,7 @@ export default {
     },
     titleClick(index) {
       // 点击导航回到相应的位置
-      this.$refs.Scroll.scrollTo(0, -this.themeTopYs[index]);
+      this.$refs.Scroll.scrollTo(0, -this.themeTopYs[index], 0);
       this.$refs.detailNav.currentIndex = index;
       // console.log(index);
       // console.log(this.$refs.detailNav.currentIndex);
@@ -157,8 +157,8 @@ export default {
         // 我们使用这种比较简单的方法 来进行比较
         if (
           this.crurrIndex !== i &&
-          position > this.themeTopYs[i] &&
-          position <= this.themeTopYs[i + 1]
+          position >= this.themeTopYs[i] &&
+          position < this.themeTopYs[i + 1]
         ) {
           this.crurrIndex = i; //这个变量主要的作用就是控制我们多少次赋值
           this.$refs.detailNav.currentIndex = i;
